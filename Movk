@@ -1,4 +1,117 @@
-I'd be happy to help you create a test that mocks `window.sessionStorage` to verify if the `clear()` function is being called. This is a common task when testing web applications that interact with session storage.
+I'dI'll help you mock `react-router-dom` for Vitest tests. This is commonly needed when testing components that use routing features like hooks (`useNavigate`, `useParams`, etc.) or components (`Link`, `Navigate`, etc.).
+
+Here's how to set up mocks for the most common parts of `react-router-dom`:
+
+```javascript
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+
+// Mock the entire react-router-dom module
+vi.mock('react-router-dom', () => {
+  // Actual implementation
+  const actual = vi.importActual('react-router-dom');
+  
+  return {
+    ...actual,
+    // Mock the hooks and components that your code uses
+    useNavigate: vi.fn(),
+    useParams: vi.fn(),
+    useLocation: vi.fn(),
+    useRouteMatch: vi.fn(),
+    Link: vi.fn(({ children, to, ...rest }) => {
+      return <a href={to} {...rest}>{children}</a>;
+    }),
+    Navigate: vi.fn(({ to }) => {
+      return <div data-testid="navigate" data-to={to}>Redirecting...</div>;
+    }),
+    // Mock BrowserRouter with a simple implementation
+    BrowserRouter: vi.fn(({ children }) => <div>{children}</div>)
+  };
+});
+
+// Import the component you want to test
+import YourComponent from './YourComponent';
+
+// Import the hooks you're mocking to configure them in tests
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+
+describe('YourComponent', () => {
+  const mockNavigate = vi.fn();
+  
+  beforeEach(() => {
+    // Clear all mocks before each test
+    vi.clearAllMocks();
+    
+    // Set up the mocked return values
+    useNavigate.mockImplementation(() => mockNavigate);
+    useParams.mockImplementation(() => ({ id: '123' }));
+    useLocation.mockImplementation(() => ({ 
+      pathname: '/current-path',
+      search: '?query=test',
+      hash: '#hash',
+      state: { from: '/previous-path' }
+    }));
+  });
+  
+  it('navigates to the correct path when button is clicked', async () => {
+    // Render your component
+    render(<YourComponent />);
+    
+    // Find and click a button that should trigger navigation
+    const button = screen.getByRole('button', { name: /navigate/i });
+    await userEvent.click(button);
+    
+    // Check if navigate was called with the expected path
+    expect(mockNavigate).toHaveBeenCalledWith('/expected-path');
+  });
+  
+  it('displays the correct ID from URL params', () => {
+    // Render your component
+    render(<YourComponent />);
+    
+    // Check if the component shows the ID from the mocked params
+    expect(screen.getByText(/123/)).toBeInTheDocument();
+  });
+});
+```
+
+This approach works well for most cases, but if you're testing more complex routing behavior, you might want to use `MemoryRouter` to create a more complete routing environment:
+
+```javascript
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
+
+// No need to mock the entire module in this case
+// vi.mock('react-router-dom') is not needed
+
+it('renders correctly with route parameters', () => {
+  render(
+    <MemoryRouter initialEntries={['/users/123']}>
+      <Routes>
+        <Route path="/users/:id" element={<YourComponent />} />
+      </Routes>
+    </MemoryRouter>
+  );
+  
+  // Your assertions here
+});
+```
+
+If you need to mock specific hooks but keep the rest of the router functionality, you can do partial mocking:
+
+```javascript
+// Only mock specific hooks
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+    // Only mock what you need
+  };
+});
+```
+
+Would you like me to focus on any specific part of `react-router-dom` or provide an example for testing a particular router feature?​​​​​​​​​​​​​​​​ be happy to help you create a test that mocks `window.sessionStorage` to verify if the `clear()` function is being called. This is a common task when testing web applications that interact with session storage.
 
 Let's set up a Vitest test that does this:
 
