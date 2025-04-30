@@ -1,0 +1,68 @@
+I'd be happy to help you create a test that mocks `window.sessionStorage` to verify if the `clear()` function is being called. This is a common task when testing web applications that interact with session storage.
+
+Let's set up a Vitest test that does this:
+
+```javascript
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
+describe('Session Storage Clear', () => {
+  // Mock implementation of sessionStorage
+  const mockSessionStorage = {
+    clear: vi.fn(),
+    getItem: vi.fn(),
+    setItem: vi.fn(),
+    removeItem: vi.fn(),
+    key: vi.fn(),
+    length: 0
+  };
+  
+  // Save the original sessionStorage implementation
+  const originalSessionStorage = window.sessionStorage;
+  
+  beforeEach(() => {
+    // Replace window.sessionStorage with our mock
+    Object.defineProperty(window, 'sessionStorage', {
+      value: mockSessionStorage,
+      writable: true
+    });
+    
+    // Reset mock function calls
+    vi.clearAllMocks();
+  });
+  
+  afterEach(() => {
+    // Restore the original sessionStorage implementation
+    Object.defineProperty(window, 'sessionStorage', {
+      value: originalSessionStorage,
+      writable: true
+    });
+  });
+  
+  it('should call sessionStorage.clear when the function is executed', () => {
+    // This is just an example - replace with your actual function that uses sessionStorage.clear()
+    function clearSessionData() {
+      window.sessionStorage.clear();
+    }
+    
+    // Call the function that should trigger sessionStorage.clear()
+    clearSessionData();
+    
+    // Assert that clear was called
+    expect(mockSessionStorage.clear).toHaveBeenCalled();
+    expect(mockSessionStorage.clear).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+This test:
+
+1. Creates a mock implementation of `sessionStorage` with mock functions for all its methods
+2. Saves the original `sessionStorage` implementation
+3. Replaces `window.sessionStorage` with our mock before each test
+4. Resets the mock function calls before each test
+5. Restores the original `sessionStorage` implementation after each test
+6. Tests that the `clear()` function is called when expected
+
+If you're testing a component or module that uses session storage, you would import that module and call the relevant functions instead of using the example `clearSessionData()` function.
+
+Would you like me to adapt this for a specific component you're testing, or would you like more details about any part of this approach?​​​​​​​​​​​​​​​​
