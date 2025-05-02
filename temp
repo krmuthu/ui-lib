@@ -1,11 +1,10 @@
-
 /**
  * Sanitizes HTML by removing all tags while preserving line breaks
  * Also converts <br> tags to actual line breaks
- * @param {string} html - The HTML string to sanitize
+ * @param {string | null | undefined} html - The HTML string to sanitize
  * @returns {React.ReactNode} - React elements with line breaks preserved
  */
-export const sanitizeHTML = (html) => {
+export const sanitizeHTML = (html: string | null | undefined): React.ReactNode => {
   if (!html) return '';
   
   // First convert <br>, <br/>, <br /> tags to newline characters
