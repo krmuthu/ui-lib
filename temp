@@ -184,3 +184,54 @@ describe('Line break preservation', () => {
     expect(screen.getByTestId('linebreak-2')).toBeInTheDocument();
   });
 });
+
+
+
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { sanitizeHTML } from './utils/sanitizeHTML'; // Update path as needed
+
+describe('sanitizeHTML', () => {
+  it('returns empty string when input is null or undefined', () => {
+    expect(sanitizeHTML(null)).toBe('');
+    expect(sanitizeHTML(undefined)).toBe('');
+  });
+
+  it('removes all HTML tags', () => {
+    const html = '<div><p>Test content</p><span>more text</span></div>';
+    const result = sanitizeHTML(html);
+    
+    const { container } = render(<>{result}</>);
+    expect(container.textContent).toBe('Test contentmore text');
+  });
+
+  it('preserves line breaks from <br> tags', () => {
+    const html = 'Line 1<br>Line 2<br/>Line 3<br />Line 4';
+    const result = sanitizeHTML(html);
+    
+    const { container } = render(<>{result}</>);
+    const content = container.innerHTML;
+    
+    // Check that <br> elements were inserted between lines
+    expect(content).toContain('Line 1');
+    expect(content).toContain('<br>');
+    expect(content).toContain('Line 2');
+    expect(content).toContain('Line 3');
+    expect(content).toContain('Line 4');
+    
+    // Count the number of <br> tags (should be 3)
+    const brCount = (content.match(/<br>/g) || []).length;
+    expect(brCount).toBe(3);
+  });
+
+  it('preserves natural line breaks in the text', () => {
+    const html = 'Line 1\nLine 2\r\nLine 3';
+    const result = sanitizeHTML(html);
+    
+    const { container } = render(<>{result}</>);
+    const content = container.innerHTML;
+    
+    // Check that <br> elements were inserted for natural linebreaks
+    expect(content).toContain('Line 1');
+    expect(content).toContain('<br>');
+    expect(content).toContain('Line 2
