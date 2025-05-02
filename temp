@@ -1,22 +1,31 @@
-function sanitizeHTML(html) {
+
+/**
+ * Sanitizes HTML by removing all tags while preserving line breaks
+ * Also converts <br> tags to actual line breaks
+ * @param {string} html - The HTML string to sanitize
+ * @returns {React.ReactNode} - React elements with line breaks preserved
+ */
+export const sanitizeHTML = (html) => {
   if (!html) return '';
   
-  // Remove all HTML tags
-  const withoutTags = html.replace(/<[^>]*>/g, '');
+  // First convert <br>, <br/>, <br /> tags to newline characters
+  let processedHtml = html.replace(/<br\s*\/?>/gi, '\n');
+  
+  // Then remove all remaining HTML tags
+  const withoutTags = processedHtml.replace(/<[^>]*>/g, '');
   
   // Replace newlines with <br /> tags for rendering in React
   const withLineBreaks = withoutTags
     .split(/\r?\n/)
-    .map((line, i) => (
+    .map((line, i, arr) => (
       <React.Fragment key={i}>
         {line}
-        {i !== withoutTags.split(/\r?\n/).length - 1 && <br />}
+        {i < arr.length - 1 && <br />}
       </React.Fragment>
     ));
     
   return withLineBreaks;
-}
-
+};
 
 import React from 'react';
 import { render, screen } from '@testing-library/react';
@@ -29,8 +38,11 @@ describe('sanitizeHTML function', () => {
   const sanitizeHTML = (html) => {
     if (!html) return '';
     
-    // Remove all HTML tags
-    const withoutTags = html.replace(/<[^>]*>/g, '');
+    // First convert <br>, <br/>, <br /> tags to newline characters
+    let processedHtml = html.replace(/<br\s*\/?>/gi, '\n');
+    
+    // Then remove all remaining HTML tags
+    const withoutTags = processedHtml.replace(/<[^>]*>/g, '');
     
     // For testing purposes, we'll convert newlines to a marker we can check for
     // In real usage, this would return React elements with <br> tags
@@ -94,8 +106,11 @@ describe('Line break preservation', () => {
     const sanitizeWithLineBreaks = (html) => {
       if (!html) return null;
       
+      // First convert <br>, <br/>, <br /> tags to newline characters
+      let processedHtml = html.replace(/<br\s*\/?>/gi, '\n');
+      
       // Remove all HTML tags
-      const withoutTags = html.replace(/<[^>]*>/g, '');
+      const withoutTags = processedHtml.replace(/<[^>]*>/g, '');
       
       // Split by newlines and create React elements with <br> tags
       return withoutTags
@@ -142,5 +157,31 @@ describe('Line break preservation', () => {
     expect(screen.getByText('Line 3')).toBeInTheDocument();
     expect(screen.getByTestId('linebreak-0')).toBeInTheDocument();
     expect(screen.getByTestId('linebreak-1')).toBeInTheDocument();
+  });
+  
+  test('converts <br> tags to line breaks', () => {
+    const input = 'Line 1<br>Line 2<br/>Line 3<br />Line 4';
+    render(<TestComponent html={input} />);
+    
+    expect(screen.getByText('Line 1')).toBeInTheDocument();
+    expect(screen.getByText('Line 2')).toBeInTheDocument();
+    expect(screen.getByText('Line 3')).toBeInTheDocument();
+    expect(screen.getByText('Line 4')).toBeInTheDocument();
+    expect(screen.getByTestId('linebreak-0')).toBeInTheDocument();
+    expect(screen.getByTestId('linebreak-1')).toBeInTheDocument();
+    expect(screen.getByTestId('linebreak-2')).toBeInTheDocument();
+  });
+  
+  test('handles mixed <br> tags and newline characters', () => {
+    const input = 'Line 1<br>Line 2\nLine 3<br />Line 4';
+    render(<TestComponent html={input} />);
+    
+    expect(screen.getByText('Line 1')).toBeInTheDocument();
+    expect(screen.getByText('Line 2')).toBeInTheDocument();
+    expect(screen.getByText('Line 3')).toBeInTheDocument();
+    expect(screen.getByText('Line 4')).toBeInTheDocument();
+    expect(screen.getByTestId('linebreak-0')).toBeInTheDocument();
+    expect(screen.getByTestId('linebreak-1')).toBeInTheDocument();
+    expect(screen.getByTestId('linebreak-2')).toBeInTheDocument();
   });
 });
