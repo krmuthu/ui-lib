@@ -1,0 +1,95 @@
+1. Project Experience & Communication
+
+Q: Can you walk me through the One Finance Platform project you developed at DBS?
+Model Answer:
+
+“We built the platform using Angular and Java Spring Boot to replace legacy systems. I led the frontend module, focusing on reusable components and worked closely with backend developers and product managers to ensure alignment. A key achievement was automating a manual workflow, saving 6 man-days per quarter.”
+
+✅ Look for: Clarity, ownership, cross-functional collaboration.
+
+⸻
+
+🎨 2. Frontend (Angular, TypeScript, JavaScript)
+
+Q1: What are the main differences between Angular services and components?
+A:
+
+Services are used to encapsulate business logic or shared data, typically injected into components. Components define views and handle UI logic.
+
+Q2: How do you manage state in Angular applications?
+A:
+
+Via services using RxJS Subjects or a state management library like NgRx for complex apps.
+
+Q3: How did you handle the migration from Angular 7 to 15?
+A:
+
+“We followed the Angular Upgrade Guide step-by-step, resolving deprecations, updating third-party libraries, and running tests with each version.”
+
+✅ Look for: Understanding of Angular architecture, async handling (RxJS), upgrade experience.
+
+⸻
+
+🛠️ 3. Backend (Java Spring Boot, Node.js)
+
+Q1: How do you build a REST API in Spring Boot?
+A:
+
+“Using @RestController, mapping endpoints with @GetMapping/@PostMapping, returning JSON responses, and exception handling using @ControllerAdvice.”
+
+Q2: How do you handle authentication in a Spring Boot app?
+A:
+
+“With Spring Security – we configure HTTP security, use JWTs for stateless auth, and restrict endpoints by roles.”
+
+Q3: What’s your experience with microservices?
+A:
+
+“At DBS, I worked on modularizing services and communicating via REST. We ensured fault isolation and CI/CD deployments per service.”
+
+✅ Look for: Clear explanation of API development, security, and service decoupling.
+
+⸻
+
+🔧 4. DevOps & CI/CD
+
+Q1: How have you used Jenkins and SonarQube in your projects?
+A:
+
+“We integrated SonarQube in the Jenkins pipeline to enforce code quality gates. Builds would fail if coverage or complexity thresholds weren’t met.”
+
+Q2: What tools have you used for monitoring and debugging?
+A:
+
+“We used AppDynamics and Splunk for tracing backend issues and Dynatrace for performance monitoring.”
+
+✅ Look for: Practical CI/CD usage, tool proficiency, quality-first mindset.
+
+⸻
+
+🧱 5. System Design & Architecture
+
+Q: Design a basic employee timesheet system.
+Model Answer:
+	•	Frontend: Angular for dashboard, form input, history view.
+	•	Backend: REST API with Spring Boot or Node.js Express.
+	•	DB: PostgreSQL with Employee, Project, and TimeEntry tables (foreign key relationships).
+	•	Scalability: Add Redis for caching user profiles; use Docker and Kubernetes for microservices.
+
+✅ Look for: Thought process, logical data modeling, tech stack familiarity.
+
+⸻
+
+🗣️ 6. Behavioral / Soft Skills
+
+Q1: Tell me about a time you had to deal with conflicting priorities.
+A:
+
+“At HDB, I had to balance performance tuning with a hard delivery deadline. I negotiated scope with the PM to phase out lower-priority items and used monitoring tools to identify low-hanging performance issues first.”
+
+Q2: How do you stay current with technology?
+A:
+
+“I follow updates from Angular and Spring blogs, attend meetups when possible, and complete Udemy courses on new tools.”
+
+✅ Look for: Collaboration, maturity, self-learning attitude.
